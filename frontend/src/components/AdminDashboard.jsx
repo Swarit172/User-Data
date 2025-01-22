@@ -30,7 +30,7 @@ const AdminDashboard = () => {
               {submission.images.map((image, imgIndex) => (
                 <img
                   key={imgIndex}
-                  src={`http://localhost:5000${image}`}
+                  src={`${import.meta.env.VITE_BACKEND_URL}${image}`}
                   alt={`Submission ${index + 1} Image ${imgIndex + 1}`}
                 />
               ))}
