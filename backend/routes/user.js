@@ -4,23 +4,15 @@ const { getSubmissions, createSubmission } = require('../controllers/userControl
 
 const router = express.Router();
 
-// Multer configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ 
+// Multer Configuration
+const storage = multer.memoryStorage();
+const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error('Only images are allowed'), false);
+      return cb(new Error('Only image files are allowed'), false);
     }
     cb(null, true);
   },

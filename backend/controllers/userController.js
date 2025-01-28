@@ -1,4 +1,5 @@
-const Submission = require('../models/user');
+const Submission = require('../models/user'); 
+const cloudinary = require('../db/cloudinary'); 
 
 // Fetch all submissions
 exports.getSubmissions = async (req, res) => {
@@ -10,16 +11,45 @@ exports.getSubmissions = async (req, res) => {
   }
 };
 
-// Handle new submission
+
 exports.createSubmission = async (req, res) => {
   try {
     const { name, socialHandle } = req.body;
-    const images = req.files.map((file) => `/uploads/${file.filename}`);
+    
+    const images = [];
+    for (const file of req.files) {
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream( 
+        { folder: 'submissions', resource_type: 'auto' }, 
+        (error, result) => {
+          if(error) throw reject(error);
+          resolve(result)
+        }
+        ).end(file.buffer);
+      });
 
-    const newSubmission = new Submission({ name, socialHandle, images });
-    await newSubmission.save();
-    res.status(201).json(newSubmission);
+      // console.log(result)
+
+      images.push({
+        fileId: result.public_id,
+        filename: result.original_filename,
+        contentType: result.resource_type,
+        url: result.secure_url,
+      });
+    }
+
+    // Create a new submission in MongoDB
+    const submission = new Submission({
+      name,
+      socialHandle,
+      images,
+    });
+
+    await submission.save();
+
+    res.status(201).json({ message: 'Submission created successfully', submission });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error creating submission' });
   }
 };
