@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from '../services/api'; 
-import '../styles/App.css'; 
+import axios from '../services/api';
+import '../styles/App.css';
 
 const UserSubmissionForm = () => {
   const [name, setName] = useState('');
@@ -25,6 +25,7 @@ const UserSubmissionForm = () => {
       setName('');
       setSocialHandle('');
       setImages([]);
+      window.location.reload(); // Refresh the page after submission
     } catch (err) {
       console.error(err);
       const errorText =

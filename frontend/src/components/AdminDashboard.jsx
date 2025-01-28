@@ -1,4 +1,3 @@
-// export default AdminDashboard;
 import React, { useEffect, useState } from 'react';
 import axios from '../services/api';
 import '../styles/App.css';
@@ -39,12 +38,18 @@ const AdminDashboard = () => {
             <p>Social Media: {submission.socialHandle}</p>
             <div className="images">
               {submission.images.map((image, imgIndex) => (
-                <img
+                <a
                   key={imgIndex}
-                  src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${image}`}
-                  alt={`Submission ${index + 1} Image ${imgIndex + 1}`}
-                  className="submission-image"
-                />
+                  href={image.url} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={image.url} 
+                    alt={`Submission ${index + 1} Image ${imgIndex + 1}`}
+                    className="submission-image"
+                  />
+                </a>
               ))}
             </div>
           </div>
